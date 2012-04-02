@@ -26,8 +26,8 @@
 #  The following variables are recognized:                                     #
 #                                                                              #
 #  env.snmpcommunity COMMUNITY  defaults to "public                            #
-#  env.snmpversion [1|2c|3]     as of firmware 3.1.5 only SNMPv1 is supported  #
 #  env.snmpmibs MIB[:...]       load given list of MIBs (ALL loads everything) #
+#  env.snmpversion [1|2c]       as of firmware 3.1.5 only SNMPv1 is supported  #
 #                                                                              #
 #  A complete configuration might look like this:                              #
 #  [example]                                                                   #
