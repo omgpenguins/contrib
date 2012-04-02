@@ -1,30 +1,53 @@
 #!/bin/bash
 #==============================================================================#
 #                                                                              #
-#  check status of sensor of HW Group Poseidon 3268. For more info refer to:   #
-#  http://www.hw-group.com/products/poseidon/poseidon_3268_en.html             #
-#  2012  by Florian Lechner                                                    #
+# check status of sensor of HW Group Poseidon 3268. For more info refer to:    #
+# http://www.hw-group.com/products/poseidon/poseidon_3268_en.html              #
+# 2012  by Florian Lechner                                                     #
 #                                                                              #
 #==============================================================================#
 #                                                                              #
-#   This program is free software: you can redistribute it and/or modify       #
-#   it under the terms of the GNU General Public License as published by       #
-#   the Free Software Foundation, either version 2 of the License, or          #
-#   (at your option) any later version.                                        #
+#  This program is free software: you can redistribute it and/or modify        #
+#  it under the terms of the GNU General Public License as published by        #
+#  the Free Software Foundation, either version 2 of the License, or           #
+#  (at your option) any later version.                                         #
 #                                                                              #
-#   This program is distributed in the hope that it will be useful,            #
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of             #
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              #
-#   GNU General Public License for more details.                               #
+#  This program is distributed in the hope that it will be useful,             #
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of              #
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               #
+#  GNU General Public License for more details.                                #
 #                                                                              #
-#   You should have received a copy of the GNU General Public License          #
-#   along with this program.  If not, see <http://www.gnu.org/licenses/>.      #
+#  You should have received a copy of the GNU General Public License           #
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.       #
+#                                                                              #
+#==============================================================================#
+#                                                                              #
+#  This plugin can be configured via the munin.conf configuration file.        #
+#  The following variables are recognized:                                     #
+#                                                                              #
+#  env.snmpcommunity COMMUNITY  defaults to "public                            #
+#  env.snmpversion [1|2c|3]     as of firmware 3.1.5 only SNMPv1 is supported  #
+#  env.snmpmibs MIB[:...]       load given list of MIBs (ALL loads everything) #
+#                                                                              #
+#  A complete configuration might look like this:                              #
+#  [example]                                                                   #
+#       env.snmpcommunity examplecommunity                                     #
+#       env.snmpmibs poseidon.mib                                              #
+#       env.snmpversion 1                                                      #
 #                                                                              #
 #==============================================================================#
 
 #  Munin autoconf and snmpautoconf magic
 #%# family=auto snmpauto contrib
 #%# capabilities=snmpconf
+
+# Configuration accepted via environment variables
+SNMPCOMMUNITY=${snmpcommunity:-"public"} 	#  SNMP community string to
+						#+ read from the device
+SNMPVERSION=${snmpversion:-"1"}                 #  as of firmware 3.1.5 only
+                                                #+ SNMPv1 is supported
+MIBS=${snmpmibs:-":"}           #  we don't use any configured MIBs so we don't 
+				#+ have to deal with errors in the MIBs
 
 E_OK="0"			#  everything went allright
 E_UNKNOWN="1"			#  "catch all" for otherwise unhandled errors
@@ -289,17 +312,6 @@ err () {
 }
 
 #==============================================================================#
-
-#  SNMP Config
-MIBS=":"			#  we don't use any configured MIBs so we don't 
-				#+ have to deal with errors in the MIBs
-if [ -z $SNMPVERSION ]; then 
-	SNMPVERSION="1"		#  as of firmware 3.1.5 only SNMPv1 is supported
-fi
-
-if [ -z $SNMPCOMMUNITY ]; then 
-	SNMPCOMMUNITY="public"	#  SNMP community string to read from the device
-fi
 
 #  handle -h option
 while getopts ":h" opt; do
